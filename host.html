@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>قدها | لوحة التحكم</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar glass">
+      <div class="brand">
+        <span class="brand-mark">⚡</span>
+        <div>
+          <h1>قدها</h1>
+          <p>لوحة تحكم المقدم</p>
+        </div>
+      </div>
+
+      <nav class="side-nav">
+        <button class="nav-btn active" data-tab="dashboard">لوحة التحكم</button>
+        <button class="nav-btn" data-tab="questions">إدارة الأسئلة</button>
+        <button class="nav-btn" data-tab="teams">الفرق والكروت</button>
+        <button class="nav-btn" data-tab="settings">الإعدادات</button>
+      </nav>
+
+      <div class="side-actions">
+        <button id="openDisplayBtn" class="primary-btn">فتح شاشة المتسابقين</button>
+        <button id="fullscreenDisplayBtn" class="secondary-btn">ملء الشاشة</button>
+        <button id="exportBtn" class="ghost-btn">تصدير نسخة احتياطية</button>
+        <label class="import-label ghost-btn">
+          استيراد نسخة
+          <input id="importInput" type="file" accept="application/json" hidden />
+        </label>
+        <button id="resetBtn" class="danger-btn">إعادة ضبط</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="topbar glass compact">
+        <div>
+          <h2 id="pageTitle">لوحة التحكم</h2>
+          <p class="muted">كل ما تغيّره هنا ينعكس على شاشة المتسابقين مباشرة.</p>
+        </div>
+        <div class="status-pill">الحفظ التلقائي مفعل</div>
+      </section>
+
+      <section id="dashboard" class="tab-panel active">
+        <div class="grid two-cols">
+          <div class="panel glass">
+            <div class="panel-head">
+              <h3>التحكم بالسؤال المعروض</h3>
+              <span class="muted">اختر الفئة والصعوبة ثم اعرض السؤال</span>
+            </div>
+
+            <div class="form-grid">
+              <label>
+                <span>الفئة</span>
+                <select id="categorySelect"></select>
+              </label>
+              <label>
+                <span>الصعوبة</span>
+                <select id="difficultySelect">
+                  <option value="easy">سهل</option>
+                  <option value="medium">متوسط</option>
+                  <option value="hard">صعب</option>
+                </select>
+              </label>
+              <label>
+                <span>رقم السؤال</span>
+                <select id="questionIndexSelect">
+                  <option value="0">1</option>
+                  <option value="1">2</option>
+                  <option value="2">3</option>
+                  <option value="3">4</option>
+                  <option value="4">5</option>
+                </select>
+              </label>
+              <label>
+                <span>مدة المؤقت (ثانية)</span>
+                <input id="timerDurationInput" type="number" min="5" max="300" step="5" value="30" />
+              </label>
+            </div>
+
+            <div class="action-row wrap">
+              <button id="showQuestionBtn" class="primary-btn">عرض السؤال</button>
+              <button id="revealAnswerBtn" class="secondary-btn">كشف الإجابة</button>
+              <button id="hideQuestionBtn" class="ghost-btn">إخفاء السؤال</button>
+              <button id="clearStageBtn" class="ghost-btn">تصفير الشاشة</button>
+            </div>
+
+            <div class="preview-card" id="questionPreviewCard">
+              <div class="preview-meta">
+                <span id="previewCategoryTag" class="tag">الفئة</span>
+                <span id="previewDifficultyTag" class="tag easy">سهل</span>
+                <span class="tag">السؤال <span id="previewQuestionNumber">1</span></span>
+              </div>
+              <div id="previewQuestionText" class="preview-text">اختر سؤالاً لعرض المعاينة هنا</div>
+              <div id="previewAnswerText" class="preview-answer">الإجابة ستظهر هنا بعد الضغط على كشف الإجابة</div>
+            </div>
+          </div>
+
+          <div class="panel glass">
+            <div class="panel-head">
+              <h3>المؤقت والمؤثرات</h3>
+              <span class="muted">تحكم سريع أثناء اللعب</span>
+            </div>
+
+            <div class="timer-card">
+              <div id="timerReadout" class="timer-readout">00:30</div>
+              <div class="action-row wrap center">
+                <button id="startTimerBtn" class="primary-btn">ابدأ</button>
+                <button id="pauseTimerBtn" class="secondary-btn">إيقاف مؤقت</button>
+                <button id="resetTimerBtn" class="ghost-btn">إعادة المؤقت</button>
+              </div>
+            </div>
+
+            <div class="action-row wrap">
+              <button id="correctSoundBtn" class="ghost-btn">صوت إجابة صحيحة</button>
+              <button id="wrongSoundBtn" class="ghost-btn">صوت إجابة خاطئة</button>
+              <button id="tickSoundBtn" class="ghost-btn">صوت عداد</button>
+            </div>
+
+            <div class="panel-head top-gap">
+              <h3>شريط أوامر سريع</h3>
+            </div>
+            <div class="quick-actions-grid">
+              <button class="quick-card" data-stage="welcome">شاشة البداية</button>
+              <button class="quick-card" data-stage="question">شاشة السؤال</button>
+              <button class="quick-card" data-stage="scores">شاشة النقاط</button>
+              <button class="quick-card" data-stage="winner">شاشة الفائز</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel glass top-gap">
+          <div class="panel-head">
+            <h3>لوحة النقاط الكبيرة</h3>
+            <span class="muted">تتحدث تلقائياً بحسب سجل العمليات</span>
+          </div>
+          <div id="scoreboardGrid" class="scoreboard-grid"></div>
+        </div>
+
+        <div class="panel glass top-gap">
+          <div class="panel-head">
+            <h3>سجل العمليات</h3>
+            <span class="muted">أدخل مبلغ موجب للربح وسالب للخسارة</span>
+          </div>
+          <div class="action-row wrap bottom-gap">
+            <label>
+              <span>الفريق</span>
+              <select id="teamTransactionSelect"></select>
+            </label>
+            <label>
+              <span>المبلغ</span>
+              <input id="transactionAmount" type="number" step="1000" placeholder="مثال 50000 أو -20000" />
+            </label>
+            <label class="grow">
+              <span>ملاحظة</span>
+              <input id="transactionNote" type="text" placeholder="مثال: سؤال متوسط" />
+            </label>
+            <button id="addTransactionBtn" class="primary-btn">إضافة عملية</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>الوقت</th>
+                  <th>الفريق</th>
+                  <th>المبلغ</th>
+                  <th>الملاحظة</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="transactionsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="questions" class="tab-panel">
+        <div class="panel glass">
+          <div class="panel-head">
+            <h3>الفئات والأسئلة</h3>
+            <span class="muted">لكل فئة 5 أسئلة في كل مستوى مع إجابة لكل سؤال</span>
+          </div>
+          <div class="action-row wrap bottom-gap">
+            <button id="addCategoryBtn" class="primary-btn">إضافة فئة</button>
+          </div>
+          <div id="questionsEditor" class="questions-editor"></div>
+        </div>
+      </section>
+
+      <section id="teams" class="tab-panel">
+        <div class="panel glass">
+          <div class="panel-head">
+            <h3>الفرق والكروت الخاصة</h3>
+            <span class="muted">غيّر الأسماء والألوان وحالة الكروت</span>
+          </div>
+          <div class="action-row wrap bottom-gap">
+            <button id="addTeamBtn" class="primary-btn">إضافة فريق</button>
+          </div>
+          <div id="teamsEditor" class="teams-editor"></div>
+        </div>
+      </section>
+
+      <section id="settings" class="tab-panel">
+        <div class="grid two-cols">
+          <div class="panel glass">
+            <div class="panel-head"><h3>إعدادات اللعبة</h3></div>
+            <div class="form-grid">
+              <label>
+                <span>اسم اللعبة</span>
+                <input id="gameTitleInput" type="text" value="قدها" />
+              </label>
+              <label>
+                <span>الهدف للفوز</span>
+                <input id="winScoreInput" type="number" step="10000" value="500000" />
+              </label>
+              <label>
+                <span>رسالة البداية</span>
+                <input id="welcomeMessageInput" type="text" value="جاهزين؟ قدها ولا لا؟" />
+              </label>
+              <label>
+                <span>رسالة الفوز</span>
+                <input id="winnerMessageInput" type="text" value="الف مبروك يا أبطال" />
+              </label>
+            </div>
+            <div class="action-row wrap top-gap">
+              <button id="saveSettingsBtn" class="primary-btn">حفظ الإعدادات</button>
+            </div>
+          </div>
+
+          <div class="panel glass">
+            <div class="panel-head"><h3>ملاحظة تشغيل</h3></div>
+            <div class="tip-box">
+              <p><b>أفضل استخدام:</b> افتح <b>host.html</b> على الابتوب، وافتح <b>display.html</b> في نافذة ثانية أو شاشة HDMI.</p>
+              <p>إذا كانت الشاشة الخارجية مخصصة للجمهور، فعّل ملء الشاشة من زر <b>ملء الشاشة</b>.</p>
+              <p>التزامن يعمل داخل نفس المتصفح باستخدام التخزين المحلي + قناة بث داخلية.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
